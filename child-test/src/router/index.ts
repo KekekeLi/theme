@@ -9,8 +9,17 @@ const routes: RouteRecordRaw[] = [
         path: '/',
         name: 'Home',
         component: Home,
-        redirect: '/theme-config',
+        redirect: '/show-color',
         children: [
+            {
+                path: '/show-color',
+                name: 'show-color',
+                meta: {
+                    title: '主题色预览',
+                    permiss: '13',
+                },
+                component: () => import(/* webpackChunkName: "theme-config" */ '../views/system/show-color.vue'),
+            },
             {
                 path: '/theme-config',
                 name: 'theme-config',

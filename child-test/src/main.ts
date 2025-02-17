@@ -8,14 +8,14 @@ import 'element-plus/dist/index.css';
 import './assets/css/icon.css';
 import { BridgeCore } from '@like_kk/bridge-core'
 import { ThemeModule, FontModule } from '@like_kk/bridge-core'
-
+import { THEME_CONFIG_KEY } from '@/utils/storeVariable'
 const bridge = new BridgeCore({
-	allowedOrigins: ['http://localhost:5174'],
+	allowedOrigins: ['http://localhost:5173'],
   secretKey: '123'
 })
 
 // 初始化模块
-new ThemeModule(bridge)
+new ThemeModule(bridge, THEME_CONFIG_KEY)
 new FontModule(bridge)
 
 const app = createApp(App);

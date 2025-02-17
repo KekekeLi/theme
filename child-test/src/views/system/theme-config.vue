@@ -1,5 +1,5 @@
 <template>
-  <div class="theme-config">
+  <!-- <div class="theme-config">
     <div class="theme-config-title">主题配置1</div>
     <div class="theme-config-content">
       <div class="theme-config-item">
@@ -13,7 +13,7 @@
         <el-color-picker v-model="layoutThemeColor" @change="changeThemeColor"></el-color-picker>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">

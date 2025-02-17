@@ -34,6 +34,12 @@ export const menuData: Menus[] = [
             {
                 id: '14',
                 pid: '1',
+                index: '/show-color',
+                title: '主题色预览',
+            },
+            {
+                id: '14',
+                pid: '1',
                 index: '/theme-config',
                 title: '主题管理',
             },

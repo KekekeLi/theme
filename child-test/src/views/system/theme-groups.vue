@@ -1,9 +1,8 @@
 <template>
-    <div class="theme-config">
+    <!-- <div class="theme-config">
       <div class="theme-config-title">我是iframe主题组配置</div>
       <div class="theme-config-title">主题组配置</div>
       <div class="theme-config-content">
-        <!-- 已保存的主题色组列表 -->
         <div class="theme-config-item">
           <span class="theme-config-label">已有主题风格：</span>
           <div class="theme-groups-list">
@@ -40,13 +39,11 @@
           </div>
         </div>
   
-        <!-- 主题色组配置 -->
         <div class="theme-config-group">
           <div class="theme-config-item">
             <span class="theme-config-label">主题名称：</span>
             <el-input class="theme-config-input" v-model="currentTheme.name" placeholder="请输入主题名称"></el-input>
           </div>
-          <!-- 保持原有的颜色选择器 -->
             <div class="theme-config-group">
                 <div class="theme-config-item">
                     <span class="theme-config-label">默认主题色：</span>
@@ -71,7 +68,7 @@
         <el-button size="large" type="primary" @click="saveThemeConfig">保存为新主题</el-button>
         <el-button size="large" type="success" @click="updateTheme" :disabled="currentThemeIndex === -1">更新当前主题</el-button>
       </div>
-    </div>
+    </div> -->
   </template>
   <script setup lang="ts">
   import { ref, reactive, watch } from 'vue';
