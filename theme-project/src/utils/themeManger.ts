@@ -29,7 +29,6 @@ class ThemeManager {
       label: '默认主题',
       variables: {
         '--primary-color': '#1890ff',
-        '--secondary-color': '#52c41a',
         '--font-size-base': '14px'
       }
     }]

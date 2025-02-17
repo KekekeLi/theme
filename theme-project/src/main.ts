@@ -4,6 +4,8 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import App from './App.vue';
 import router from './router';
 import { usePermissStore } from './store/permiss';
+import { useBridgeStore } from './store/bridge';
+import { BridgeCore } from '@like_kk/bridge-core';
 import 'element-plus/dist/index.css';
 import './assets/css/icon.css';
 
@@ -24,5 +26,13 @@ app.directive('permiss', {
         }
     },
 });
+
+// 初始化通信中心
+const bridgeStore = useBridgeStore();
+const bridge = new BridgeCore({
+	allowedOrigins: ['https://child-domain.com'],
+	secretKey: '123'
+})
+bridgeStore.setBridge(bridge);
 
 app.mount('#app');

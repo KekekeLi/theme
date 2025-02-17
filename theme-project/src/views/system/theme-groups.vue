@@ -75,8 +75,10 @@
   <script setup lang="ts">
   import { ref, reactive, watch } from 'vue';
   import { useStorage } from '@vueuse/core';
-  import { useElementPlusTheme } from 'use-element-plus-theme';
+  import { THEME_CONFIG_KEY } from '@/utils/storeVariable';
+  import { ThemeModule } from '@like_kk/bridge-core';
   import { ElMessage } from 'element-plus';
+  import { useBridgeStore } from '@/store/bridge';
   
   interface ThemeGroup {
     name: string;
@@ -85,28 +87,34 @@
     error: string;
     warn: string;
   }
-  
+
+  const bridge = useBridgeStore().bridge;
+  const themeModule = new ThemeModule(bridge, THEME_CONFIG_KEY, {
+    primary: '#409EFF',
+    success: '#67C23A',
+    error: '#F56C6C',
+    warn: '#E6A23C'
+  })
+
   // 主题色组存储
-  const themeGroup = reactive({
-    primary: useStorage('theme-primary', '#409EFF').value,
-    success: useStorage('theme-success', '#67C23A').value,
-    error: useStorage('theme-error', '#F56C6C').value,
-    warn: useStorage('theme-warn', '#E6A23C').value,
+  const themeGroup = useStorage(THEME_CONFIG_KEY, {
+    primary: '#409EFF',
+    success: '#67C23A',
+    error: '#F56C6C',
+    warn: '#E6A23C'
   });
 
   // 保存所有主题色组
   const savedThemes = useStorage<ThemeGroup[]>('saved-theme-groups', []);
+  // const savedThemes = ref<ThemeGroup[]>([]);
   const currentThemeIndex = ref(-1);
-
   
   // 当前编辑的主题
   const currentTheme = reactive({
     name: '',
-    ...themeGroup
+    ...themeGroup.value
   });
 
-  const { changeTheme } = useElementPlusTheme(themeGroup.primary);
-  
   // 监听主题色变化，同步到当前主题
   watch(themeGroup, (newValues) => {
     Object.assign(currentTheme, newValues);
@@ -117,11 +125,12 @@
     currentThemeIndex.value = index;
     Object.keys(theme).forEach(key => {
       if (key !== 'name' && key in themeGroup) {
-        themeGroup[key as keyof typeof themeGroup] = theme[key as keyof ThemeGroup];
+        themeGroup[key as keyof Omit<ThemeGroup, 'name'>] = theme[key as keyof ThemeGroup];
       }
     });
     currentTheme.name = theme.name;
-    changeTheme(theme.primary);
+    useBridgeStore().setCurrentThemeConfig(themeGroup.value);
+    themeModule.updateTheme(themeGroup.value);
   };
   
   // 保存新主题
@@ -141,22 +150,18 @@
     }
     savedThemes.value.push({
       name: currentTheme.name,
-      primary: themeGroup.primary,
-      success: themeGroup.success,
-      error: themeGroup.error,
-      warn: themeGroup.warn,
+      ...themeGroup.value,
     });
-    useStorage(`theme-primary`, 'primary').value = themeGroup.primary;
+    useBridgeStore().setCurrentThemeConfig(themeGroup.value);
+    themeModule.updateTheme(themeGroup.value);
     ElMessage.success('主题保存成功');
   };
 
   // 修改主题色组
   const changeThemeGroupColor = (type: keyof Omit<ThemeGroup, 'name'>, color: string) => {
-    themeGroup[type] = color;
-    // useStorage(`theme-${type}`, color).value = color;
-    if (type === 'primary') {
-      changeTheme(color);
-    }
+    themeGroup.value[type] = color;
+    useBridgeStore().setCurrentThemeConfig(themeGroup.value);
+    themeModule.updateTheme(themeGroup.value);
   };
   
   // 更新当前主题
@@ -164,10 +169,7 @@
     if (currentThemeIndex.value === -1) return;
     savedThemes.value[currentThemeIndex.value] = {
       name: currentTheme.name,
-      primary: themeGroup.primary,
-      success: themeGroup.success,
-      error: themeGroup.error,
-      warn: themeGroup.warn,
+      ...themeGroup.value  
     };
     ElMessage.success('主题更新成功');
   };

@@ -4,13 +4,13 @@
     <div class="theme-config-content">
       <div class="theme-config-item">
         <span class="theme-config-label">主题风格：</span>
-        <el-radio-group v-model="themeStyle" @change="changeThemeStyle">
+        <el-radio-group v-model="themeStyle" @change="updatePrimary">
           <el-radio v-for="item in themeColors" :key="item.color" :label="item.color" :title="item.themeName" :style="{ color: item.color }">{{ item.themeName }}</el-radio>
         </el-radio-group>
       </div>
       <div class="theme-config-item">
         <span class="theme-config-label">主题颜色：</span>
-        <el-color-picker v-model="layoutThemeColor" @change="changeThemeColor"></el-color-picker>
+        <el-color-picker v-model="layoutThemeColor.primary" @change="changeThemeColor"></el-color-picker>
       </div>
     </div>
   </div>
@@ -18,11 +18,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { THEME_CONFIG_KEY } from '@/utils/storeVariable';
 import { useStorage } from '@vueuse/core';
-import { useElementPlusTheme } from 'use-element-plus-theme';
-import { ElMessage } from 'element-plus';
-
-
 import { BridgeCore, ThemeModule, FontModule } from "@like_kk/bridge-core";
 
 // const bridge = useBridge()
@@ -37,33 +34,43 @@ const bridge = new BridgeCore({
   secretKey: '345'
 })
 
-const themeModule = new ThemeModule(bridge)
-const fontModule = new FontModule(bridge)
+const themeModule = new ThemeModule(bridge, THEME_CONFIG_KEY, {
+  primary: '#409EFF',
+  success: '#67C23A',
+  error: '#F56C6C',
+  warn: '#E6A23C'
+})
 
-// 更新主题示例
-themeModule.updatePrimary('#FF0000')
 
-// const layoutThemeColor = useStorage('layout-theme-color', '#409EFF');  // 默认主题色
+const updatePrimary = (color) => {
+  // 更新主题示例
+  themeModule.updateTheme({
+    primary: color, // 更新主题颜色
+  })
+}
+
+
+const layoutThemeColor = useStorage('theme-config', { primary: '#409EFF'});  // 默认主题色
 
 // const { changeTheme } = useElementPlusTheme(layoutThemeColor.value);  // 初始化主题色
 
-// const themeColors = [
-//   { color: '#1b2a47', themeName: '道奇蓝' },
-//   { color: '#722ed1', themeName: '深紫罗兰色' },
-//   { color: '#eb2f96', themeName: '深粉色' },
-//   { color: '#f5222d', themeName: '猩红色' },
-//   { color: '#fa541c', themeName: '橙红色' },
-//   { color: '#13c2c2', themeName: '绿宝石' },
-//   { color: '#52c41a', themeName: '酸橙绿' },
-// ];
+const themeColors = [
+  { color: '#1b2a47', themeName: '道奇蓝' },
+  { color: '#722ed1', themeName: '深紫罗兰色' },
+  { color: '#eb2f96', themeName: '深粉色' },
+  { color: '#f5222d', themeName: '猩红色' },
+  { color: '#fa541c', themeName: '橙红色' },
+  { color: '#13c2c2', themeName: '绿宝石' },
+  { color: '#52c41a', themeName: '酸橙绿' },
+];
 
-// const themeStyle = ref('');
+const themeStyle = ref('');
 
-// const changeThemeColor = (color: string) => {
-//     themeStyle.value = '';
-//     changeTheme(color);
-//     layoutThemeColor.value = color;  // 保存主题色
-// }
+const changeThemeColor = (color: string) => {
+    themeStyle.value = '';
+    layoutThemeColor.value.primary = color; 
+    updatePrimary(color);
+}
 
 
 // const changeThemeStyle = (color: string) => {
